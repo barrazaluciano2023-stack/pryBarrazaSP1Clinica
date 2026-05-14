@@ -22,6 +22,7 @@ namespace pryBarrazaSP1Clinica
         {
 
             cargarEspecialidad();
+            cmbEspecialidad.SelectedIndex = -1;
         }
 
         private void cargarEspecialidad()
@@ -54,75 +55,86 @@ namespace pryBarrazaSP1Clinica
         private void CargarMedicos(int idEspecialidad)
         {
             CConexion objetoConeccionBaseDatos = new CConexion();
-            objetoConeccionBaseDatos.ConectarBaseDatos();
-            string query = "SELECT Nombre , Matricula FROM Medico WHERE nroEspecialidad = ?";
+            try
+            {
+                objetoConeccionBaseDatos.mostrarMedicos(dgvInfo, idEspecialidad);
 
-            OleDbDataAdapter da = new OleDbDataAdapter(query, objetoConeccionBaseDatos.conectorBaseDatos);
-            da.SelectCommand.Parameters.AddWithValue("@Id", idEspecialidad);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            //string query = "SELECT Nombre , Matricula FROM Medico WHERE nroEspecialidad = ?";
 
-            DataTable dt = new DataTable();
-            da.Fill(dt);
+            //OleDbDataAdapter da = new OleDbDataAdapter(query, objetoConeccionBaseDatos.conectorBaseDatos);
+            //da.SelectCommand.Parameters.AddWithValue("@Id", idEspecialidad);
 
-            dgvInfo.DataSource = dt;
+            //DataTable dt = new DataTable();
+            //da.Fill(dt);
+
+            //dgvInfo.DataSource = dt;
         }
         private void btnRegistrarEspecialidad_Click(object sender, EventArgs e)
         {
             CConexion objetoConeccionBaseDatos = new CConexion();
-            objetoConeccionBaseDatos.ConectarBaseDatos();
-            string query = "INSERT INTO Especialidad (Nombre,nroEspecialidad) VALUES (?,?)";
+            objetoConeccionBaseDatos.cargarEspecialidad(txtNombreEspecialidad.Text , txtNroIdentificacion.Text);
 
-            using (OleDbCommand cmd = new OleDbCommand(query, objetoConeccionBaseDatos.conectorBaseDatos))
-                try
-                {
-                    cmd.Parameters.AddWithValue("@Nombre", txtNombreEspecialidad.Text);
-                    cmd.Parameters.AddWithValue("@nroEspecialidad", txtNroIdentificacion.Text);
-                    cmd.ExecuteNonQuery();
-                    txtNroIdentificacion.Clear();
-                    txtNombreEspecialidad.Clear();
-                    MessageBox.Show("Especialidad registrada con Exito!");
+            txtNroIdentificacion.Clear();
+            txtNombreEspecialidad.Clear();
+            //string query = "INSERT INTO Especialidad (Nombre,nroEspecialidad) VALUES (?,?)";
+
+            //using (OleDbCommand cmd = new OleDbCommand(query, objetoConeccionBaseDatos.conectorBaseDatos))
+            //    try
+            //    {
+            //        cmd.Parameters.AddWithValue("@Nombre", txtNombreEspecialidad.Text);
+            //        cmd.Parameters.AddWithValue("@nroEspecialidad", txtNroIdentificacion.Text);
+            //        cmd.ExecuteNonQuery();
+            //        txtNroIdentificacion.Clear();
+            //        txtNombreEspecialidad.Clear();
+            //        MessageBox.Show("Especialidad registrada con Exito!");
 
 
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al ejecutar comando: " + ex.Message);
-                }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("Error al ejecutar comando: " + ex.Message);
+            //    }
 
-                finally
-                {
-                    objetoConeccionBaseDatos.conectorBaseDatos.Close();
-                }
+            //    finally
+            //    {
+            //        objetoConeccionBaseDatos.conectorBaseDatos.Close();
+            //    }
 
         }
 
         private void btnRegistrarMedico_Click(object sender, EventArgs e)
+            
         {
-            CConexion objetoConeccionBaseDatos = new CConexion();
-            objetoConeccionBaseDatos.ConectarBaseDatos();
-            string query = "INSERT INTO Medico (Nombre,Matricula,nroEspecialidad) VALUES (?,?,?)";
+            //objetoConeccionBaseDatos.ConectarBaseDatos();
+            //string query = "INSERT INTO Medico (Nombre,Matricula,nroEspecialidad) VALUES (?,?,?)";
 
-            using (OleDbCommand cmd = new OleDbCommand(query, objetoConeccionBaseDatos.conectorBaseDatos))
-                try
-                {
-                    cmd.Parameters.AddWithValue("@Nombre", txtNombreMedico.Text);
-                    cmd.Parameters.AddWithValue("@Matricula", txtMatricula.Text);
-                    cmd.Parameters.AddWithValue("@nroIdentificacion", txtEspecialidadMedico.Text);
-                    cmd.ExecuteNonQuery();
-                    txtNombreMedico.Clear();
-                    txtMatricula.Clear();
-                    txtEspecialidadMedico.Clear();
-                    MessageBox.Show("Medico registrado con Exito!");
+            //using (OleDbCommand cmd = new OleDbCommand(query, objetoConeccionBaseDatos.conectorBaseDatos))
+            //    try
+            //    {
+            //        cmd.Parameters.AddWithValue("@Nombre", txtNombreMedico.Text);
+            //        cmd.Parameters.AddWithValue("@Matricula", txtMatricula.Text);
+            //        cmd.Parameters.AddWithValue("@nroIdentificacion", txtEspecialidadMedico.Text);
+            //        cmd.ExecuteNonQuery();
+                    //txtNombreMedico.Clear();
+                    //txtMatricula.Clear();
+                    //txtEspecialidadMedico.Clear();
+                    //MessageBox.Show("Medico registrado con Exito!");
 
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al ejecutar comando: " + ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    MessageBox.Show("Error al ejecutar comando: " + ex.Message);
+                //}
 
-                finally
-                {
-                    objetoConeccionBaseDatos.conectorBaseDatos.Close();
-                }
+                //finally
+                //{
+                //    objetoConeccionBaseDatos.conectorBaseDatos.Close();
+                //}
 
 
         }
@@ -156,6 +168,24 @@ namespace pryBarrazaSP1Clinica
             txtEspecialidadMedico.Clear();
             txtNombreMedico.Focus();
 
+        }
+
+        private void btnRegistrarMedico_Click_1(object sender, EventArgs e)
+        {
+
+            try
+            {
+
+                CConexion objetoConeccionBaseDatos = new CConexion();
+                objetoConeccionBaseDatos.cargarMedico(txtNombreMedico.Text, txtMatricula.Text, txtEspecialidadMedico.Text);
+                txtNombreMedico.Clear();
+                txtMatricula.Clear();
+                txtEspecialidadMedico.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al registrar medico: " + ex.Message);
+            }
         }
     }
 }
